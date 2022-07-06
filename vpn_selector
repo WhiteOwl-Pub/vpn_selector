@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------
+# author: whiteowl
+# title: vpn selector
+#
+# Description:
+#
+#          This script lets you choose between VPNs u have in specific directory
+#	   and show all interfaces to see if you already connect to it.
+#
+#          i create this script mainly for tryhackme and hackthebox platform
+#
+#
+#
+#
+# ------------------------------------------------------------------
+
+echo "vpn selector"
+echo
+infc=$(ifconfig -s | cut -d " " -f 1 | tail -n+2)
+echo "your current inteface: "
+echo $infc
+read -p "do you want to connect to vpn? (y/n): " cho
+
+if [ "$cho" == n ];
+then
+	echo "bye!"
+	exit 0
+else
+	echo "welcome!"
+fi
+
+
+readarray -t files < <(ls "$HOME/Documents/vpn" )  #change it to your vpn dirctory
+
+PS3="choose >> "
+select file in "${files[@]}";
+do
+	result="$file"
+	echo "u selected: $file"
+break
+done
+
+echo "connecting to $file"
+
+openvpn "$HOME/Documents/vpn/$file"
